@@ -39,7 +39,7 @@ class Ball():
 
         count += 1
 
-        # change the starting time of z1 feedback 
+        # You can change the starting time of z1 feedback 
         if count > 80:
             self.v1 = - k1 * (self.z[0] - x_d[0])
 
