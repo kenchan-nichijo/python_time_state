@@ -57,7 +57,7 @@ class Ball():
 # Class for drawing balls
 class Drawing_ball():
     def __init__(self, ax):
-        self.ball_img, = ax.plot([], [], color = 'b')
+        # self.ball_img, = ax.plot([], [], color = 'b')
         self.ax = ax
 
     # return (x,y) of the edge of the circles
