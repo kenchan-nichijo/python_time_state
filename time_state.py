@@ -61,7 +61,7 @@ class Drawing_ball():
         self.ax = ax
 
     # return (x,y) of the edge of the circles
-    def draw_circle(self, center_x, center_y, balls_size, dire):
+    def draw_circle(self, center_x, center_y, balls_size):
         circle_size = balls_size
         steps = 100  # enough to draw circles
         self.circle_x = []  # x of the circle
@@ -70,34 +70,41 @@ class Drawing_ball():
         for j in range(steps):
             self.circle_x.append(center_x + circle_size * math.cos(j * 2 * math.pi/steps))
             self.circle_y.append(center_y + circle_size * math.sin(j * 2 * math.pi/steps))
-            self.circle_x.append(center_x + r_dire * math.cos(math.atan(dire)) + 0.2 * circle_size * math.cos(j * 2 * math.pi/steps))
-            self.circle_y.append(center_y + r_dire * math.sin(math.atan(dire)) + 0.2 * circle_size * math.sin(j * 2 * math.pi/steps))
 
         return self.circle_x, self.circle_y
+    
+    # return (x,y) of the edge of the sub_circles
+    def draw_sub_circle(self, sub_center_x, sub_center_y, balls_size, dire):
+        circle_size = balls_size
+        steps = 100  # enough to draw circles
+        self.sub_circle_x = []  # x of the circle
+        self.sub_circle_y = []  # y of the circle
 
-    def set_graph_data(self):
-        self.ball_img.set_data(self.circle_x, self.circle_y)
-        return self.ball_img, 
+        for j in range(steps):
+            self.sub_circle_x.append(sub_center_x + r_dire * math.cos(math.atan(dire)) + 0.2 * circle_size * math.cos(j * 2 * math.pi/steps))
+            self.sub_circle_y.append(sub_center_y + r_dire * math.sin(math.atan(dire)) + 0.2 * circle_size * math.sin(j * 2 * math.pi/steps))
+
+        return self.sub_circle_x, self.sub_circle_y
+
+    # def set_graph_data(self):
+    #     self.ball_img.set_data(self.circle_x, self.circle_y)
+    #     return self.ball_img, 
 
 # Function for updating animation
 def update_anim(i):  # This i increases with each update
-    balls_imgs = []
-
-    balls_size.append(0.3)
-    balls.append(Ball())
-    balls_drawers.append(Drawing_ball(ax))
+    main = []
+    sub = []
    
     # update the state of balls
     temp_x, temp_y, temp_t = balls[0].state_update()
 
-    temp_x, temp_y = balls_drawers[0].draw_circle(temp_x, temp_y, balls_size[0], temp_t)
+    main = balls_drawers[0].draw_circle(temp_x, temp_y, balls_size)
+    sub = balls_drawers[0].draw_sub_circle(temp_x, temp_y, balls_size, temp_t)
 
-    balls_imgs.append(balls_drawers[0].set_graph_data())
+    ax.plot(main[0], main[1], color = 'b') + ax.plot(sub[0], sub[1], color = 'r')
 
-    # time
+    # update the current step
     step_text.set_text('step = {0}'.format(i))
-
-    return balls_imgs
 
 
 #############################################################
@@ -112,7 +119,6 @@ ax = fig.add_subplot(111)
 # set the range of the axis
 minmax_x = [-6, 6]
 minmax_y = [-4, 8]
-
 ax.set_xlim(minmax_x[0], minmax_x[1])
 ax.set_ylim(minmax_y[0], minmax_y[1])
 
@@ -132,15 +138,15 @@ step_text = ax.text(0.05, 0.9, '', transform = ax.transAxes)
 
 # make balls
 balls_num = 1
-balls_size = []
-balls = []
-balls_drawers = []
+balls_size = 0.3
+balls = [Ball()]
+balls_drawers = [Drawing_ball(ax)]
 
 # draw animation
 plt.scatter([x_init[0], x_d[0]], [x_init[1], x_d[1]], c = ['k', 'r'], s = 100, marker = "x")
 animation = ani.FuncAnimation(fig, update_anim, interval = 50, frames = 150)
 
 ## if you want to save gif, uncomment bellow ###
-animation.save('time_state.gif', writer='imagemagick')
+# animation.save('time_state.gif', writer='imagemagick')
 
 plt.show()
