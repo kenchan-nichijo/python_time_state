@@ -1,5 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
+from matplotlib import patches
 import matplotlib.animation as ani
 import math
 import copy
@@ -98,10 +99,13 @@ def update_anim(i):  # This i increases with each update
     # update the state of balls
     temp_x, temp_y, temp_t = balls[0].state_update()
 
-    main = balls_drawers[0].draw_circle(temp_x, temp_y, balls_size)
-    sub = balls_drawers[0].draw_sub_circle(temp_x, temp_y, balls_size, temp_t)
+    c = patches.Circle((temp_x, temp_y), 0.25, facecolor="b", edgecolor="b", label="circle")
+    ax.add_patch(c)
 
-    ax.plot(main[0], main[1], color = 'b') + ax.plot(sub[0], sub[1], color = 'r')
+    # main = balls_drawers[0].draw_circle(temp_x, temp_y, balls_size)
+    # sub = balls_drawers[0].draw_sub_circle(temp_x, temp_y, balls_size, temp_t)
+
+    # ax.plot(main[0], main[1], color = 'b') + ax.plot(sub[0], sub[1], color = 'r')
 
     # update the current step
     step_text.set_text('step = {0}'.format(i))
@@ -144,7 +148,7 @@ balls_drawers = [Drawing_ball(ax)]
 
 # draw animation
 plt.scatter([x_init[0], x_d[0]], [x_init[1], x_d[1]], c = ['k', 'r'], s = 100, marker = "x")
-animation = ani.FuncAnimation(fig, update_anim, interval = 50, frames = 150)
+animation = ani.FuncAnimation(fig, update_anim, interval = 1, frames = 100)
 
 ## if you want to save gif, uncomment bellow ###
 # animation.save('time_state.gif', writer='imagemagick')
